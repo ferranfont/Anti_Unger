@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # Load the summary output
-summary_file_path = os.path.join('outputs', 'summary_output_df.csv')
+summary_file_path = os.path.join('outputs', 'summary_orders.csv')
 
 if os.path.exists(summary_file_path):
     summary = pd.read_csv(summary_file_path)
@@ -12,27 +12,27 @@ else:
     raise FileNotFoundError(f"⚠️ Summary file not found at: {summary_file_path}")
 
 # Ensure numeric columns
-summary['profit'] = pd.to_numeric(summary['profit'], errors='coerce')
+summary['Profit'] = pd.to_numeric(summary['Profit'], errors='coerce')
 summary['MAE_points'] = pd.to_numeric(summary['MAE_points'], errors='coerce')
 summary['MFE_points'] = pd.to_numeric(summary['MFE_points'], errors='coerce')
 
 # Remove rows with NaN profit
-summary = summary.dropna(subset=['profit'])
+summary = summary.dropna(subset=['Profit'])
 
 # Basic counts
 total_trades = len(summary)
-winning_trades = summary[summary['profit'] > 0]
-losing_trades = summary[summary['profit'] < 0]
+winning_trades = summary[summary['Profit'] > 0]
+losing_trades = summary[summary['Profit'] < 0]
 
 # Ratios
 win_rate = len(winning_trades) / total_trades if total_trades else 0
 loss_rate = len(losing_trades) / total_trades if total_trades else 0
 
 # Averages
-average_profit = winning_trades['profit'].mean() if not winning_trades.empty else 0
-average_loss = losing_trades['profit'].mean() if not losing_trades.empty else 0  # Negative value
+average_profit = winning_trades['Profit'].mean() if not winning_trades.empty else 0
+average_loss = losing_trades['Profit'].mean() if not losing_trades.empty else 0  # Negative value
 
-total_profit = summary['profit'].sum()
+total_profit = summary['Profit'].sum()
 expectancy = (average_profit * win_rate) + (average_loss * loss_rate)
 
 # MAE and MFE averages
@@ -40,7 +40,7 @@ average_mae = summary['MAE_points'].mean()
 average_mfe = summary['MFE_points'].mean()
 
 # Sharpe and Sortino Ratios
-returns = summary['profit']
+returns = summary['Profit']
 mean_return = returns.mean()
 std_dev = returns.std()
 downside_std = returns[returns < 0].std()

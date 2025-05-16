@@ -63,3 +63,7 @@ print(f"Average MFE (points): {average_mfe:.2f}")
 print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 print(f"Sortino Ratio: {sortino_ratio:.2f}")
 print(f"======================================")
+
+correlation_matrix = summary[['SL', 'break_oposite', 'break_D_oposite']].corr()
+print("\n========= CORRELATION WITH TP HIT =========")
+print(correlation_matrix['SL'])

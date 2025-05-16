@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pandas as pd
 from datetime import datetime
 import order_managment as oem
+import order_managment_candle as oemc
 import chart_volume as chart
 import plotly.graph_objects as go
 import find_high_volume_candles as hv
@@ -34,7 +35,7 @@ for fecha in dates:
     #fecha = "2025-04-17"  # Fecha de inicio para el cuadradito
     hora = "15:30:00"     # Hora de inicio para el cuadradito
     lookback_min = 60    # Ventana de tiempo en minutos para el cuadradito
-    entry_shift = 1      # Desplazamiento para la entrada (1 punto por encima del fractal)
+    entry_shift = 3     # Desplazamiento para la entrada (1 punto por encima del fractal)
     too_late_patito_negro= "16:30:00"  # Hora límite exigida para la formación del fractal patito negro para anular la entrada
     too_late_brake_fractal_pauta_plana = "17:00:00"  # Hora límite exigida para rotura del fractal patito negro para anular la entrada
 
@@ -125,7 +126,7 @@ for fecha in dates:
     # ORDER MANAGMENT
     # ====================================================
 
-    df_orders = oem.order_managment(
+    df_orders = oemc.order_managment(
         df_subset,
         y0_value,
         y1_value,

@@ -36,8 +36,8 @@ for fecha in dates:
     hora = "15:30:00"     # Hora de inicio para el cuadradito
     lookback_min = 60    # Ventana de tiempo en minutos para el cuadradito
     entry_shift = 3     # Desplazamiento para la entrada (1 punto por encima del fractal)
-    too_late_patito_negro= "16:30:00"  # Hora límite exigida para la formación del fractal patito negro para anular la entrada
-    too_late_brake_fractal_pauta_plana = "17:00:00"  # Hora límite exigida para rotura del fractal patito negro para anular la entrada
+    too_late_patito_negro= "16:00:00"  # Hora límite exigida para la formación del fractal patito negro para anular la entrada
+    too_late_brake_fractal_pauta_plana = "16:00:00"  # Hora límite exigida para rotura del fractal patito negro para anular la entrada
 
     START_DATE = pd.Timestamp(fecha, tz='Europe/Madrid')
     END_DATE = pd.Timestamp(fecha, tz='Europe/Madrid')
@@ -117,7 +117,7 @@ for fecha in dates:
         y0_value,
         y1_value,
         n=2, # Compara el volumen con el volumen medio de las dos anteriores velas
-        factor=1.2 # Exige para True que  la vela actual tenga un volumen superior en un factor determinado
+        factor=1 # Exige para True que  la vela actual tenga un volumen superior en un factor determinado un 1.1 es un 10% más de volumen
     )
 
     df_high_volumen_candles = df_high_volumen_candles[df_high_volumen_candles['Volumen_Alto']]
@@ -144,7 +144,7 @@ for fecha in dates:
     # GRAFICACIÓN DE DATOS 
     # ====================================================
     titulo = f"Chart_{fecha}"       
-    chart.graficar_precio(df_subset, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value, first_breakout_time, first_breakout_price, first_breakdown_time, first_breakdown_price, df_high_volumen_candles)
+    chart.graficar_precio(df_subset, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value, first_breakout_time, first_breakout_price, first_breakdown_time, first_breakdown_price, df_high_volumen_candles, df_orders)
 
 
 

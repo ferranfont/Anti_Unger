@@ -12,7 +12,7 @@ def order_managment(
     first_breakdown_price: float,
     df_high_volumen_candles: pd.DataFrame,
     target_profit: float = 15,
-    stop_lost: float = 15,
+    stop_lost: float = 4,
     discount_short: float = -0.20,
     discount_long: float = 20
 ) -> pd.DataFrame:
@@ -36,11 +36,8 @@ def order_managment(
         return None
 
     # ================== CALCULOS BASE ======================
-    opening_range = y1_value - y0_value
     midpoint = (y1_value + y0_value) / 2
-    stop_lost_short = y1_value + opening_range * 0.90
-    stop_lost_long = y0_value - opening_range * 0.90
-    n_lookahead = 2
+    n_lookahead = 3
 
     df = df_high_volumen_candles.copy()    
     df = df[df.index > END_TIME]  # 🚨 Solo velas posteriores a END_TIME
@@ -63,7 +60,7 @@ def order_managment(
 
     for entry_time, entry_type, entry_price, alert_idx in entradas_finales:
         tp = midpoint
-        sl = stop_lost_long if entry_type == 'Long' else stop_lost_short
+        sl = entry_price - stop_lost if entry_type == 'Long' else entry_price + stop_lost
 
         after_entry = df_subset[df_subset.index > entry_time]
         max_fav = 0

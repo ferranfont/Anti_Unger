@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value, first_breakout_time=None, first_breakout_price=None, first_breakdown_time=None, first_breakdown_price=None, high_volume_df=None):
+def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value, first_breakout_time=None, first_breakout_price=None, first_breakdown_time=None, first_breakdown_price=None, high_volume_df=None, df_orders=None):
     if df.empty or not all(col in df.columns for col in ['Open', 'High', 'Low', 'Close']):
         print("❌ DataFrame vacío o faltan columnas OHLC.")
         return
@@ -94,7 +94,7 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
             x=[first_breakout_time],
             y=[first_breakout_price+1],
             mode='markers',
-            marker=dict(color='green', size=10, symbol='diamond'),
+            marker=dict(color='orange', size=10, symbol='diamond'),
             name='First Breakout'
         ), row=1, col=1)
 
@@ -103,18 +103,46 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
             x=[first_breakdown_time],
             y=[first_breakdown_price-1],
             mode='markers',
-            marker=dict(color='red', size=10, symbol='diamond'),
+            marker=dict(color='orange', size=10, symbol='diamond'),
             name='First Breakdown'
         ), row=1, col=1)
     
     if high_volume_df is not None and not high_volume_df.empty:
         fig.add_trace(go.Scatter(
             x=high_volume_df.index,
-            y=high_volume_df['Close'],
+            y=high_volume_df['Close']-1,
             mode='markers',
             marker=dict(symbol='circle', color='blue', size=10),
             name='High Volume Candles'
         ), row=1, col=1)
+
+    if df_orders is not None and not df_orders.empty:   # establece las salidas
+        fig.add_trace(go.Scatter(
+            x=df_orders['Exit_Time'],
+            y=df_orders['Exit_Price'],
+            mode='markers',
+            marker=dict(color='red', size=12, symbol='x'),
+            name='Exit Orders'
+        ), row=1, col=1)
+
+    if df_orders is not None and not df_orders.empty:   # establece las salidas
+        fig.add_trace(go.Scatter(
+            x=df_orders['Entry_Time'],
+            y=df_orders['Entry_Price'],
+            mode='markers',
+            marker=dict(color='lime', size=14, symbol='star'), # establece las entradas
+            name='Exit Orders'
+        ), row=1, col=1)
+
+    if df_orders is not None and not df_orders.empty:
+        for _, row in df_orders.iterrows():
+            fig.add_trace(go.Scatter(
+                x=[row['Entry_Time'], row['Exit_Time']],
+                y=[row['Entry_Price'], row['Exit_Price']],
+                mode='lines',
+                line=dict(color='gray', width=1, dash='dot'),
+                name='Entry to Exit'
+            ), row=1, col=1)
 
     fig.update_layout(
         dragmode='pan',

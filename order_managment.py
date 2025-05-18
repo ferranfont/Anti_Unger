@@ -1,21 +1,19 @@
+'''
 import pandas as pd
 import os
 
 def order_managment(
-    df_subset: pd.DataFrame,
-    y0_value: float,
-    y1_value: float,
-    END_TIME,
-    first_breakout_time: pd.Timestamp,
-    first_breakout_price: float,
-    first_breakdown_time: pd.Timestamp,
-    first_breakdown_price: float,
-    df_high_volumen_candles: pd.DataFrame,
-    target_profit: float = 15,
-    stop_lost: float = 15,
-    discount_short: float = -0.20,
-    discount_long: float = 20
-) -> pd.DataFrame:
+        after_open_df,
+        y0_value,
+        y1_value,
+        y0_subvalue,
+        y1_subvalue
+        END_TIME,
+        first_breakout_time,
+        first_breakout_price,
+        first_breakdown_time,
+        first_breakdown_price,
+) 
 
     # ================== CALCULOS BASE ======================
     expansion = 0.38
@@ -152,4 +150,4 @@ def order_managment(
     return df_orders
 
 
-
+'''

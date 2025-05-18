@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value, first_breakout_time=None, first_breakout_price=None, first_breakdown_time=None, first_breakdown_price=None, high_volume_df=None, df_orders=None):
+def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_value, y1_value,  y0_subvalue, y1_subvalue, first_breakout_time=None, first_breakout_price=None, first_breakdown_time=None, first_breakdown_price=None, high_volume_df=None, df_orders=None):
     if df.empty or not all(col in df.columns for col in ['Open', 'High', 'Low', 'Close']):
         print("❌ DataFrame vacío o faltan columnas OHLC.")
         return
@@ -60,33 +60,34 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
     fig.add_shape(type="rect", x0=START_TIME, x1=END_TIME, y0=y0_value, y1=y1_value,  # cuadradito de apertura
                   xref='x', yref='y1', line=dict(color='lightblue', width=1),
                   fillcolor='rgba(173, 216, 230, 0.5)', layer='below')
-
-    fig.add_shape(type="rect", x0=END_TIME, x1=too_late_patito_negro, y0=y0_expansion, y1=y1_expansion, # cuadradito tras la apertura
-                  xref='x', yref='y1', line=dict(color='rgba(210, 255, 210, 0.5)', width=1),
-                  fillcolor='rgba(210, 255, 210, 0.5)', layer='below')
     
-    fig.add_shape(type="rect", x0=END_TIME, x1=too_late_patito_negro, y0=y0_expansion, y1=y0_hotspot, #hotpsot inferior
-                  xref='x', yref='y1', line=dict(color='green', width=0),
-                  fillcolor='rgba(0, 128, 0, 0.4)', layer='below')
-    
-    fig.add_shape(type="rect", x0=END_TIME, x1=too_late_patito_negro, y0=y1_hotspot, y1=y1_expansion, #hotspot superior
-                  xref='x', yref='y1', line=dict(color='green', width=0),
-                  fillcolor='rgba(0, 128, 0, 0.4)', layer='below')
+    fig.add_shape(type="rect", x0=START_TIME, x1=END_TIME, y0=y0_subvalue, y1=y1_subvalue,  # cuadradito de apertura con los cierres
+                xref='x', yref='y1', line=dict(color='lightblue', width=1),
+                fillcolor='rgba(173, 216, 230, 0.5)', layer='below')
 
-    fig.add_shape(type="line", x0=END_TIME, x1=END_TIME, y0=0, y1=1,
+    fig.add_shape(type="line", x0=START_TIME, x1=START_TIME, y0=0, y1=1,     # hora de apertura vertical line
                   xref="x", yref="paper", line=dict(color="blue", width=1), opacity=0.5)
 
-    fig.add_shape(type="line", x0=too_late_patito_negro, x1=too_late_patito_negro, y0=0, y1=1,
+    fig.add_shape(type="line", x0=END_TIME, x1=END_TIME, y0=0, y1=1,        # hora de fin apertura vertical line
                   xref="x", yref="paper", line=dict(color="grey", width=1), opacity=0.5)
     
+    fig.add_shape(type="line", x0=too_late_patito_negro, x1=too_late_patito_negro, y0=0, y1=1,   # hora de fin operativa
+                xref="x", yref="paper", line=dict(color="grey", width=1), opacity=0.5)
+    
     fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=midpoint, y1=midpoint,  # linea midpoint del rango de pre apertura
-                  xref="x", yref="y1", line=dict(color="black", width=1), opacity=0.6) 
+                  xref="x", yref="y1", line=dict(color="grey", width=1,dash="dot"), opacity=0.6) 
     
-    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=stop_line_high, y1=stop_line_high, # linea stop superior
-                  xref="x", yref="y1", line=dict(color="red", width=1), opacity=0.7)  
+    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=y1_value, y1=y1_value, # linea entrada superior
+                  xref="x", yref="y1", line=dict(color="blue", width=1), opacity=0.7)  
     
-    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=stop_line_low, y1=stop_line_low, # linea stop inferior
-                  xref="x", yref="y1", line=dict(color="red", width=1), opacity=0.7)  
+    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=y0_value, y1=y0_value, # linea entrada inferior
+                  xref="x", yref="y1", line=dict(color="blue", width=1), opacity=0.7)  
+    
+    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=y1_subvalue, y1=y1_subvalue, # linea subentrada superior
+                  xref="x", yref="y1", line=dict(color="blue", width=1, dash="dot"), opacity=0.7)  
+    
+    fig.add_shape(type="line", x0=END_TIME, x1=too_late_patito_negro, y0=y0_subvalue, y1=y0_subvalue, # linea subentrada inferior
+                  xref="x", yref="y1", line=dict(color="blue", width=1, dash="dot"), opacity=0.7)  
 
 
     if first_breakout_time and first_breakout_price:
@@ -94,7 +95,7 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
             x=[first_breakout_time],
             y=[first_breakout_price+1],
             mode='markers',
-            marker=dict(color='orange', size=10, symbol='diamond'),
+            marker=dict(color='orange', size=14, symbol='hourglass'),
             name='First Breakout'
         ), row=1, col=1)
 
@@ -103,7 +104,7 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
             x=[first_breakdown_time],
             y=[first_breakdown_price-1],
             mode='markers',
-            marker=dict(color='orange', size=10, symbol='diamond'),
+            marker=dict(color='DarkOrange', size=14, symbol='hourglass'),
             name='First Breakdown'
         ), row=1, col=1)
     
@@ -167,5 +168,12 @@ def graficar_precio(df, too_late_patito_negro, titulo, START_TIME, END_TIME, y0_
     fig.write_html(output_file, config=config)
     print(f"📁 Gráfico interactivo guardado como {output_file}")
 
-    import webbrowser
-    webbrowser.open('file://' + os.path.realpath(output_file))
+
+    # Guardar el HTML sin abrir navegador
+    fig.write_html(output_file, config=config, auto_open=False)
+    print(f"📁 Gráfico interactivo guardado como {output_file}")
+
+    
+
+    #import webbrowser
+    #webbrowser.open('file://' + os.path.realpath(output_file))

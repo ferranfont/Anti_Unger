@@ -5,3 +5,4 @@ y por lo tanto compramos la reversión a la media
 Le pedimos para entrar a la contra que la vela esté por encima del máximo o mínimo del cuadradito de la apertura.
 Le pedimos además que la vela tenga un volumen climático
 Tras estos eventos el sistema se activará y entrará tan pronto encuentre una vela de signo contrario al buscado
+ver otros repos creados
